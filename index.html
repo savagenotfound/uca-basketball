@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCA Basketball Tournament</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="UCABT.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow glow-orange"></div>
+        <div class="glow glow-blue"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>UCA BASKETBALL TOURNAMENT</h1>
+            <p class="subtitle">Season Standings & Player Statistics</p>
+        </header>
+
+        <section class="section-card">
+            <h2>🏆 TEAM STANDINGS</h2>
+            <div class="table-container">
+                <table id="standings-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Wins (W)</th>
+                            <th>Losses (L)</th>
+                            <th>Win %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card mvp-section">
+            <h2>⭐ MVP LEADERBOARD | TOP 10</h2>
+            <div class="table-container">
+                <table id="mvp-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player Name</th>
+                            <th>Team</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mvp-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>PLAYER STATISTICS BY TEAMS</h2>
+            <div id="teams-container">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /**
+         * ========================================================
+         * 🏀 UCA BASKETBALL TOURNAMENT DATA 🏀
+         * ========================================================
+         * EDIT THIS SECTION TO UPDATE THE WEBSITE!
+         */
+
+        const teamsData = [
+            // tiebreaker - дополнительное число для сортировки при равном счете (чем больше число, тем выше место)
+            { id: "preps", name: "Preps", wins: 3, losses: 2, tiebreaker: 2 },
+            { id: "freshmen", name: "Freshmen", wins: 2, losses: 3, tiebreaker: 0 },
+            { id: "sophomores", name: "Sophomores", wins: 3, losses: 2, tiebreaker: 1 },
+            { id: "juniors", name: "Juniors", wins: 0, losses: 5, tiebreaker: 0 },
+            { id: "seniors", name: "Seniors", wins: 3, losses: 2, tiebreaker: 3 },
+            { id: "security", name: "Security", wins: 4, losses: 1, tiebreaker: 0 }
+        ];
+
+        const playersData = [
+            // Preps
+            { name: "Arafat Yunussov", teamId: "preps", points: 0 },
+            { name: "Sinon Ilolov", teamId: "preps", points: 0 },
+            { name: "Arabsho Davlatshoev", teamId: "preps", points: 0 },
+            { name: "Nizomi Muborakshoev", teamId: "preps", points: 0 },
+            { name: "Buzurgmehr Oshurbekzoda", teamId: "preps", points: 0 },
+            { name: "Jovid Abdulvobov", teamId: "preps", points: 0 },
+            { name: "Fakhriddin Ahmadkhonov", teamId: "preps", points: 0 },
+
+            // Freshmen
+            { name: "Tagai Makeshov", teamId: "freshmen", points: 0 },
+            { name: "Alikhan Bakaev", teamId: "freshmen", points: 0 },
+            { name: "Porso Sulaymonov", teamId: "freshmen", points: 0 },
+            { name: "Gamzat Rasulov", teamId: "freshmen", points: 0 },
+            { name: "Alisher Mamadrizokhonov", teamId: "freshmen", points: 0 },
+            { name: "Rizvon Navruzov", teamId: "freshmen", points: 0 },
+            { name: "Asiljon Mamajanov", teamId: "freshmen", points: 0 },
+
+            // Sophomores
+            { name: "Emir Sakiev", teamId: "sophomores", points: 0 },
+            { name: "Amal Kurbanov", teamId: "sophomores", points: 0 },
+            { name: "Alimzhan Kamiev", teamId: "sophomores", points: 0 },
+            { name: "Aizhigit Zhigitekov", teamId: "sophomores", points: 0 },
+            { name: "Kairat Kubatov", teamId: "sophomores", points: 0 },
+            { name: "Baizak Asylbek uulu", teamId: "sophomores", points: 0 },
+            { name: "Musharraf Amadbekov", teamId: "sophomores", points: 0 },
+
+            // Juniors
+            { name: "Naim Beknazarov", teamId: "juniors", points: 0 },
+            { name: "Mustafo Afzunov", teamId: "juniors", points: 0 },
+            { name: "Navras Gulayozov", teamId: "juniors", points: 0 },
+            { name: "Amin Alimamadov", teamId: "juniors", points: 0 },
+            { name: "Arsen Dovlatov", teamId: "juniors", points: 0 },
+            { name: "Asil Shonabiev", teamId: "juniors", points: 0 },
+
+            // Seniors
+            { name: "Bahrom Saidashurov", teamId: "seniors", points: 0 },
+            { name: "Ali Davlatshoev", teamId: "seniors", points: 0 },
+            { name: "Ramzi Shodmonbekov", teamId: "seniors", points: 0 },
+            { name: "Muzaffar Nazarkhudoev", teamId: "seniors", points: 0 },
+            { name: "Amjad Asalbekov", teamId: "seniors", points: 0 },
+            { name: "Anis Partovov", teamId: "seniors", points: 0 },
+            { name: "Faridun Karabozov", teamId: "seniors", points: 0 },
+
+            // Security (Staff)
+            { name: "Kazybek Kuikeev", teamId: "security", points: 0 },
+            { name: "Timurlan Bekbolotov", teamId: "security", points: 0 },
+            { name: "Tynchtykbek Makerov", teamId: "security", points: 0 },
+            { name: "Aktan Esenbekov", teamId: "security", points: 0 },
+            { name: "Suiunbek Tolomushev", teamId: "security", points: 0 },
+            { name: "Kanybek Kazaliev", teamId: "security", points: 0 },
+            { name: "Bekmyrza Kadyrbek uulu", teamId: "security", points: 0 },
+        ];
+
+        /**
+         * ========================================================
+         * WEBSITE LOGIC (DO NOT EDIT UNLESS YOU KNOW JAVASCRIPT)
+         * ========================================================
+         */
+
+        // Get Team Name by ID helper
+        function getTeamName(teamId) {
+            const team = teamsData.find(t => t.id === teamId);
+            return team ? team.name : "Unknown";
+        }
+
+        // Render Standings
+        function renderStandings() {
+            const tbody = document.getElementById('standings-body');
+            
+            // Calculate win percentage and sort
+            const sortedTeams = [...teamsData].map(team => {
+                const totalGames = team.wins + team.losses;
+                team.winPctValue = totalGames === 0 ? 0 : (team.wins / totalGames);
+                team.winPctDisplay = totalGames === 0 ? "0%" : Math.round(team.winPctValue * 100) + "%";
+                return team;
+            }).sort((a, b) => {
+                // Sort by wins first, then win percentage, then tiebreaker
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                if (b.winPctValue !== a.winPctValue) return b.winPctValue - a.winPctValue;
+                return (b.tiebreaker || 0) - (a.tiebreaker || 0);
+            });
+
+            tbody.innerHTML = sortedTeams.map((team, index) => `
+                <tr>
+                    <td><div class="rank-badge ${index < 3 ? 'top-' + (index + 1) : ''}">${index + 1}</div></td>
+                    <td class="team-name">${team.name}</td>
+                    <td class="stat-wins">${team.wins}</td>
+                    <td class="stat-losses">${team.losses}</td>
+                    <td style="font-weight: 600;">${team.winPctDisplay}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render MVP Leaderboard
+        function renderMVPLeaderboard() {
+            const tbody = document.getElementById('mvp-body');
+            
+            // Sort players by points descending, take top 10
+            const sortedPlayers = [...playersData]
+                .filter(p => p.points > 0) // Only show players who have scored
+                .sort((a, b) => b.points - a.points)
+                .slice(0, 10);
+
+            if (sortedPlayers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No points recorded yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = sortedPlayers.map((player, index) => `
+                <tr>
+                    <td><div class="rank-badge ${index === 0 ? 'top-1' : ''}">${index + 1}</div></td>
+                    <td class="player-name">${player.name}</td>
+                    <td><span class="team-tag team-${player.teamId}">${getTeamName(player.teamId)}</span></td>
+                    <td class="stat-points">${player.points}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Team Rosters
+        function renderTeams() {
+            const container = document.getElementById('teams-container');
+            
+            container.innerHTML = teamsData.map(team => {
+                const teamPlayers = playersData
+                    .filter(p => p.teamId === team.id)
+                    .sort((a, b) => b.points - a.points); // Sort players in team by points
+
+                return `
+                    <div class="team-box">
+                        <h3 class="team-header team-${team.id}-bg">${team.name}</h3>
+                        <table class="roster-table">
+                            <thead>
+                                <tr>
+                                    <th>Player Name</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${teamPlayers.map(player => `
+                                    <tr>
+                                        <td>${player.name}</td>
+                                        <td class="stat-points-small">${player.points}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize App
+        function init() {
+            renderStandings();
+            renderMVPLeaderboard();
+            renderTeams();
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
